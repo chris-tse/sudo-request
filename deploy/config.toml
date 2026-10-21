@@ -1,0 +1,33 @@
+# /etc/sudo-request/config.toml — read by both the backend and the executor.
+# Owned by root, mode 0644. Contains no secrets; the executor refuses to start
+# if this file is writable by anyone but root.
+
+[server]
+# CLI socket: any local user may queue a request (never approve one).
+cli_socket = "/run/sudo-request/cli.sock"
+# Dashboard socket, proxied by Tailscale Serve. A Unix socket (rather than a
+# localhost port) means no other local user can impersonate the dashboard if
+# the backend is down.
+web_socket = "/run/sudo-request/web.sock"
+dashboard_url = "https://@HOSTNAME@:10000"
+database = "/var/lib/sudo-request/requests.sqlite"
+static_dir = "/opt/sudo-request/web"
+executor = "socket"
+
+[requests]
+expiration_minutes = 10
+max_pending = 20
+history_days = 30
+
+[webauthn]
+# Passkeys are bound to rp_id; approvals are only accepted from this exact
+# origin (including the port), so T3 Code on :443 cannot produce one.
+rp_id = "@HOSTNAME@"
+origin = "https://@HOSTNAME@:10000"
+
+[executor]
+socket = "/run/sudo-request-executor/executor.sock"
+state_dir = "/var/lib/sudo-request-executor"
+allowed_peer_user = "sudo-request"
+timeout_seconds = 900
+max_output_bytes = 1048576

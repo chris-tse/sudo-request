@@ -1,0 +1,24 @@
+[package]
+name = "sudo-request-executor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "sudo-request-executor"
+path = "src/main.rs"
+
+[dependencies]
+base64 = "0.22"
+ciborium = "0.2"
+clap = { version = "4", features = ["derive"] }
+libc = "0.2"
+p256 = { version = "0.13", features = ["ecdsa"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10"
+sudo-request-protocol.workspace = true
+toml = "0.8"
+
+[dev-dependencies]
+p256 = { version = "0.13", features = ["ecdsa", "pem"] }

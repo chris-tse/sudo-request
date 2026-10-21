@@ -1,0 +1,18 @@
+# Local development: mock executor, nothing runs, no passkeys.
+# bun server/src/main.ts dev/mock.toml
+[server]
+cli_socket = "dev/run/cli.sock"
+web_listen = "127.0.0.1:4877"
+dashboard_url = "http://localhost:4877"
+database = "dev/run/requests.sqlite"
+static_dir = "web/dist"
+executor = "mock"
+extra_origins = ["http://localhost:5173", "http://127.0.0.1:4877"]
+
+[requests]
+expiration_minutes = 10
+max_pending = 20
+
+[webauthn]
+rp_id = "localhost"
+origin = "http://localhost:4877"

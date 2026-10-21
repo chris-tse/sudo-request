@@ -1,0 +1,42 @@
+[Unit]
+Description=sudo-request backend (unprivileged approval queue and dashboard)
+After=network.target sudo-request-executor.service
+Wants=sudo-request-executor.service
+
+[Service]
+Type=simple
+User=sudo-request
+Group=sudo-request
+ExecStart=/opt/sudo-request/bin/sudo-request-server /etc/sudo-request/config.toml
+Restart=always
+RestartSec=2
+
+RuntimeDirectory=sudo-request
+RuntimeDirectoryMode=0755
+StateDirectory=sudo-request
+StateDirectoryMode=0700
+UMask=0077
+
+# Hardening. Home and /tmp stay visible (read-only / shared) so the dashboard
+# can warn about arguments that point at user-writable files.
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

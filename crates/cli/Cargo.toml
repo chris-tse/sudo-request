@@ -1,0 +1,16 @@
+[package]
+name = "sudo-request"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "sudo-request"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde.workspace = true
+serde_json.workspace = true
+sudo-request-protocol.workspace = true
+libc = "0.2"

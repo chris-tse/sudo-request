@@ -1,0 +1,29 @@
+[Unit]
+Description=sudo-request privileged executor (runs passkey-approved commands as root)
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/opt/sudo-request/bin/sudo-request-executor --config /etc/sudo-request/config.toml serve
+Restart=always
+RestartSec=2
+
+# Holds only the socket; access is limited to the backend's uid by
+# file mode (root:sudo-request 0660) and SO_PEERCRED.
+RuntimeDirectory=sudo-request-executor
+RuntimeDirectoryMode=0755
+# Enrolled passkeys and the execute-once ledger.
+StateDirectory=sudo-request-executor
+StateDirectoryMode=0700
+UMask=0077
+
+# Restarting or stopping the executor must not kill an approved command
+# halfway through (e.g. dpkg). The ledger records such runs as interrupted
+# and the dashboard shows them as "uncertain"; they are never retried.
+KillMode=process
+
+# Deliberately not sandboxed: approved commands need full root (apt,
+# systemctl, ufw, modprobe...). The security boundary is the passkey check.
+
+[Install]
+WantedBy=multi-user.target
